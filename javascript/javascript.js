@@ -1,8 +1,13 @@
+/* I was able to get just about everything working except for the timeout feature. 
+Also, I had to repeat lines of code instead of figuring out a way to use the same function to correlate with
+a specific answer/value. I could not get it to work with the setTimeout function at the bottom.*/
 $(document).ready(function(){
+    //made a few variables
     var time = 30;
     var numCorrect = 0;
     var numIncorrect = 0;
 
+    //created 10 questions
     trumpsQuestions = [{
         question: "Weekly, how many McDoubles does Trump eat?",
         choices: ["1", "3", "5", "too many"],
@@ -46,6 +51,7 @@ $(document).ready(function(){
     }
     ]
 
+    //made most of the countdown timer
     function countDown(){
         time--;
         $("#timer").html(time);
@@ -54,15 +60,18 @@ $(document).ready(function(){
         }
     }
 
+    //made function to print the questions and answers to the screen
     function makeQuestions(quesNum){
         var ques;
         var ans;
 
+        //prints questions
         ques = $("<h2>");
         ques.text(trumpsQuestions[quesNum].question);
         ques.addClass("qanda");
         $("#pageContent").append(ques);
 
+        //prints each answer as a button
         for(i=0;i<trumpsQuestions[quesNum].choices.length;i++){
             ans = $("<button type='button' value= '" + i + "' class='btn btn-primary btn-lg btn-block'>Block level button</button>");
             ans.html(trumpsQuestions[quesNum].choices[i]);
@@ -72,16 +81,22 @@ $(document).ready(function(){
         }   
     }
 
+    //made function to reset the game or question actually after each submitted answer
     function resetGame(which, a){
         $(".beforestart").remove();
         $("#instructions").text("You have 30 seconds to answer the question below:");
-        time = 40;
+        //reset the timer
+        time = 30;
         $("#timer").text(time);
         thetimer = setInterval(countDown, 1000);
         $("#pageContent").empty();
+
+        /*I most likely overcomplicated things greatly from here on out. A few small things kept me from 
+        just using one function. Figuring out another way.*/
         var tester;
         tester = which;
 
+        //this decides which question to pull after the previous question is answered
         if(tester === "a"){
             makeQuestions(1);
         } else if(tester === "b"){
@@ -101,11 +116,15 @@ $(document).ready(function(){
         } else if(tester === "i"){
             makeQuestions(9);
         }
-
+        //flag used in deciding what was right or not
         questionFlag = a;
 
-    }
+        if (time === 0){
+            resetGame();
+        }
 
+    }
+    //triggers the game when start button is clicked
     $("#startbutton").on("click", function(){
         $(".beforestart").remove();
         $("#instructions").text("You have 30 seconds to answer the question below:");
@@ -115,27 +134,44 @@ $(document).ready(function(){
         questionFlag = "1 question";
     })
 
+    //prints the correct text as well as updates the score for the ending.
     function right(comment){
         $("#pageContent").empty();
         $("#pageContent").html("<h2>" + comment + "</h2>");
+        numCorrect++;
     }
 
+    //prints the correct text as well as updates the score at the end.
     function wrong(comment){
         $("#pageContent").empty();
         $("#pageContent").html("<h2>" + comment + "</h2>");
+        numIncorrect++;
     }
 
+    //this is what happens at the end of the game.
+    function endGame(){
+        $("#pageContent").empty();
+        $("#pageContent").html("<h2>You got " + numCorrect + " correct</h2>");
+        $("#pageContent").append("<h2>You got " + numIncorrect + " incorrect</h2>");
+        $("#pageContent").append("<h2>Pretty Good?</h2>");
+    }
+
+    //after the start button is clicked, this is what triggers the rest of the buttons
     $(document).on("click", ".answerButtons", function(){
+        //this stores the answer you choose
         var chosenAnswer;
         chosenAnswer = $(this).val();
         clearInterval(thetimer);
+        var gameOverFlag = false;
 
+        /*again, probably overcomplicating this. Each is only slightly different 
+        because I wanted to print different trump gifs. */
         if(questionFlag === "1 question"){
             if(chosenAnswer == trumpsQuestions[0].correctAnswer){
                 right("You were right");
                 $("#pageContent").append("<img src='images/right.gif' class='trumpSeesAll'>");
             } else {
-                wrong("Wow you were very wrong.")
+                wrong("WRONG!")
                 $("#pageContent").append("<img src='images/wrong.gif' class='trumpSeesAll'>");
             }
         } else if (questionFlag === "2 question"){
@@ -143,7 +179,7 @@ $(document).ready(function(){
                 right("You were right");
                 $("#pageContent").append("<img src='images/tenor4.gif' class='trumpSeesAll'>");
             } else {
-                wrong("Wow you were very wrong.")
+                wrong("WRONG!")
                 $("#pageContent").append("<img src='images/tenor3.gif' class='trumpSeesAll'>");
             }
         } else if (questionFlag === "3 question"){
@@ -151,7 +187,7 @@ $(document).ready(function(){
                 right("You were right");
                 $("#pageContent").append("<img src='images/tenor5.gif' class='trumpSeesAll'>");
             } else {
-                wrong("Wow you were very wrong.")
+                wrong("WRONG!")
                 $("#pageContent").append("<img src='images/tenor6.gif' class='trumpSeesAll'>");
             }
         } else if (questionFlag === "4 question"){
@@ -159,7 +195,7 @@ $(document).ready(function(){
                 right("You were right");
                 $("#pageContent").append("<img src='images/tenor8.gif' class='trumpSeesAll'>");
             } else {
-                wrong("Wow you were very wrong.")
+                wrong("WRONG!")
                 $("#pageContent").append("<img src='images/tenor7.gif' class='trumpSeesAll'>");
             }
         } else if (questionFlag === "5 question"){
@@ -167,7 +203,7 @@ $(document).ready(function(){
                 right("You were right");
                 $("#pageContent").append("<img src='images/tenor9.gif' class='trumpSeesAll'>");
             } else {
-                wrong("Wow you were very wrong.")
+                wrong("WRONG!")
                 $("#pageContent").append("<img src='images/tenor10.gif' class='trumpSeesAll'>");
             }
         } else if (questionFlag === "6 question"){
@@ -175,7 +211,7 @@ $(document).ready(function(){
                 right("You were right");
                 $("#pageContent").append("<img src='images/tenor12.gif' class='trumpSeesAll'>");
             } else {
-                wrong("Wow you were very wrong.")
+                wrong("WRONG!")
                 $("#pageContent").append("<img src='images/tenor11.gif' class='trumpSeesAll'>");
             }
         } else if (questionFlag === "7 question"){
@@ -183,7 +219,7 @@ $(document).ready(function(){
                 right("You were right");
                 $("#pageContent").append("<img src='images/trumppizza.webp' class='trumpSeesAll'>");
             } else {
-                wrong("Wow you were very wrong.")
+                wrong("WRONG!")
                 $("#pageContent").append("<img src='images/tenorWRONG.gif' class='trumpSeesAll'>");
             }
         } else if (questionFlag === "8 question"){
@@ -191,7 +227,7 @@ $(document).ready(function(){
                 right("You were right");
                 $("#pageContent").append("<img src='images/tenor7.gif' class='trumpSeesAll'>");
             } else {
-                wrong("Wow you were very wrong.")
+                wrong("WRONG!")
                 $("#pageContent").append("<img src='images/tenor9.gif' class='trumpSeesAll'>");
             }
         } else if (questionFlag === "9 question"){
@@ -199,19 +235,24 @@ $(document).ready(function(){
                 right("You were right");
                 $("#pageContent").append("<img src='images/tenor4.gif' class='trumpSeesAll'>");
             } else {
-                wrong("Wow you were very wrong.")
+                wrong("WRONG!")
                 $("#pageContent").append("<img src='images/tenor3.gif' class='trumpSeesAll'>");
             }
         } else if (questionFlag === "10 question"){
             if(chosenAnswer == trumpsQuestions[9].correctAnswer){
                 right("You were right");
                 $("#pageContent").append("<img src='images/tenor5.gif' class='trumpSeesAll'>");
-            } else {
-                wrong("Wow you were very wrong.")
-                $("#pageContent").append("<img src='images/tenor10.gif' class='trumpSeesAll'>");
-            }
-        }
+                setTimeout(endGame, 3000);
 
+            } else {
+                wrong("WRONG!")
+                $("#pageContent").append("<img src='images/tenor10.gif' class='trumpSeesAll'>");
+                setTimeout(endGame, 3000);
+            }
+        } 
+        
+        /*This is what printed out things after the answer is selected. Everything would have been simpler 
+        had I been able to figure out the syntax below on how to update which question comes next.*/
         if (questionFlag === "1 question"){
             setTimeout(resetGame, 3000, "a", "2 question");
         } else if(questionFlag === "2 question"){
@@ -230,6 +271,7 @@ $(document).ready(function(){
             setTimeout(resetGame, 3000, "h", "9 question");
         } else if(questionFlag === "9 question"){
             setTimeout(resetGame, 3000, "i", "10 question");
+            return gameOverFlag = true;
         }
     })
 
